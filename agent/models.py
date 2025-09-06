@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 llm_supervisor = init_chat_model(
-    model="groq:openai/gpt-oss-120b"
+    model="groq:openai/gpt-oss-120b",
+    max_tokens=1000
 )
 
 llm_peripheral = init_chat_model(
