@@ -5,6 +5,7 @@ langchain>=0.3.27
 langgraph>=0.6.3
 openai>=1.99.1
 transformers>=4.53.2
+langchain-groq>=0.3.7
 langgraph-supervisor>=0.0.29
 wikipedia>=1.4.0
 wolframalpha>=5.1.3
