@@ -23,7 +23,7 @@ This project is a **voice- and text-based AI assistant** powered by **FastAPI**,
 
 ## 🚀 Features
 
-- **FastAPI backend** with `/text`, `/image` and `/voice` endpoints
+- **FastAPI backend** with `/text`, `/image`, `/voice` and `/file` endpoints
 - **LangGraph agents** with memory, tools, and typed state
 - **User database** with persistent settings and config
 - **Agents**:
@@ -84,12 +84,20 @@ Form data:
 ### `/image` – Send Image Prompt
 
 ```http
-POST /voice
+POST /image
 Form data:
 - state (str): JSON-encoded state dict
 - file (binary): Image file (JPEG, PNG, etc.)
 ```
 
+### `/file` – Send File Prompt
+
+```http
+POST /file
+Form data:
+- state (str): JSON-encoded state dict
+- file (binary): Image file (PDF, TXT, etc.)
+```
 ---
 
 ## 🧩 Agent State Structure
@@ -123,6 +131,7 @@ This dictionary acts as a single mutable state shared across all agent steps, al
 
 ## 🧠 Built With
 
+- [Groq](https://github.com/groq/groq-python)
 - [LangGraph](https://github.com/langchain-ai/langgraph)
 - [LangChain](https://github.com/langchain-ai/langchain)
 - [FastAPI](https://fastapi.tiangolo.com/)
