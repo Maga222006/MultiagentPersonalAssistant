@@ -14,3 +14,7 @@ llm_peripheral = init_chat_model(
 llm_agents = init_chat_model(
     model="groq:qwen/qwen3-32b"
 )
+
+llm_image = init_chat_model(
+    model="groq:meta-llama/llama-4-scout-17b-16e-instruct"
+)

@@ -29,14 +29,17 @@ async def file_mode(
     data = await file.read()
     dest.write_bytes(data)
 
+    # Initialize agent
+    assistant = Assistant(state=state_data)
+    await assistant.authorization()
+
     # Preprocess file
     transcription = await preprocess_file(str(dest))
     state_data["message"] = HumanMessage(
         content=transcription
     )
     # Call the agents
-    assistant = Assistant(state=state_data)
-    await assistant.authorization()
+    assistant.state = state_data
     response = await assistant.run()
     os.remove(str(dest))
     return response
@@ -57,6 +60,10 @@ async def file_mode(
     data = await file.read()
     dest.write_bytes(data)
 
+    # Initialize agent
+    assistant = Assistant(state=state_data)
+    await assistant.authorization()
+
     # Preprocess file
     file_contents = await preprocess_file(str(dest))
     state_data["message"] = HumanMessage(
@@ -64,8 +71,7 @@ async def file_mode(
     )
 
     # Call the agents
-    assistant = Assistant(state=state_data)
-    await assistant.authorization()
+    assistant.state = state_data
     response = await assistant.run()
     os.remove(str(dest))
     return response
@@ -86,6 +92,10 @@ async def file_mode(
     data = await file.read()
     dest.write_bytes(data)
 
+    #Initialize agent
+    assistant = Assistant(state=state_data)
+    await assistant.authorization()
+
     # Preprocess file
     file_contents = await preprocess_file(str(dest))
     state_data["message"] = HumanMessage(
@@ -93,8 +103,7 @@ async def file_mode(
     )
 
     # Call the agents
-    assistant = Assistant(state=state_data)
-    await assistant.authorization()
+    assistant.state = state_data
     response = await assistant.run()
     os.remove(str(dest))
     return response
