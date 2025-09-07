@@ -1,6 +1,5 @@
 from speechbrain.inference.classifiers import EncoderClassifier
 from langchain_core.messages import HumanMessage
-from agent.models import llm_image
 import speech_recognition as sr
 from pydub import AudioSegment
 from dotenv import load_dotenv
@@ -69,6 +68,7 @@ def preprocess_audio(file_name: str):
 
 
 async def preprocess_image(file_name: str):
+    from agent.models import llm_image
     with open(file_name, "rb") as f:
         img_b64 = base64.b64encode(f.read()).decode("utf-8")
     response = await llm_image.ainvoke([HumanMessage(
