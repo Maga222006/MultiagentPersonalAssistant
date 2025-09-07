@@ -1,10 +1,11 @@
+from agent.file_preprocessing import preprocess_file, preprocess_audio
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from agent.file_preprocessing import preprocess_file
 from langchain_core.messages import HumanMessage
 from agent.multi_agent import Assistant
 from typing import Any, Dict
 from fastapi import Form
 from pathlib import Path
+import asyncio
 import json
 import os
 
@@ -14,7 +15,7 @@ MEDIA_DIR = Path("mediafiles")
 app = FastAPI()
 
 @app.post("/voice")
-async def file_mode(
+async def voice_mode(
         state: str = Form(...),
         file: UploadFile = File(...)
 ) -> Dict[str, Any]:
@@ -34,7 +35,7 @@ async def file_mode(
     await assistant.authorization()
 
     # Preprocess file
-    transcription = await preprocess_file(str(dest))
+    transcription = await asyncio.to_thread(preprocess_audio, str(dest))
     state_data["message"] = HumanMessage(
         content=transcription
     )
@@ -45,7 +46,7 @@ async def file_mode(
     return response
 
 @app.post("/image")
-async def file_mode(
+async def image_mode(
         state: str = Form(...),
         file: UploadFile = File(...)
 ) -> Dict[str, Any]:
