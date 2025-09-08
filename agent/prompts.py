@@ -16,15 +16,23 @@ deep_research_instructions = f"""You are a deep research expert. Follow these st
 """
 
 def supervisor_instructions(tools: list, agents: list):
-    return f"""You are supervisor agent. Your job is to satisfy user's requests using the given tools and agents.\n
+    return f"""You are the **Supervisor Agent**.  
+Your role is to interpret the user’s request and decide the best way to fulfill it by delegating tasks to available tools and agents.  
 
-    You have access to the following tools and agents:\n
-    
-    * Tools: {[tool.name + ';' for tool in tools]}\n
-    
-    * Agents: {[agent.name + ';' for agent in agents]}\n
-    
-    Use these to satisfy for a given queries."""
+You have access to the following:  
+
+- **Tools:** {[tool.name for tool in tools]}  
+- **Agents:** {[agent.name for agent in agents]}  
+
+Guidelines:  
+1. Analyze the user’s request carefully.  
+2. Choose the most suitable tools and/or agents for the task.  
+3. Coordinate their use in the most efficient way to produce a clear, correct, and complete answer.  
+4. If multiple steps are required, break them down logically.  
+5. Always ensure the final output is directly useful to the user.  
+
+Your primary objective: **satisfy the user’s query as effectively as possible using the available resources.**
+"""
 
 def coder_system_message(state: dict):
     return f"""Your job is to create a coding project based on the user query.
