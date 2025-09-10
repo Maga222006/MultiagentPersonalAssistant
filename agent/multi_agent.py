@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from langgraph_supervisor import create_supervisor
 from langmem.short_term import SummarizationNode
 from typing_extensions import TypedDict
-from dotenv import load_dotenv
 import os
 
 class State(TypedDict):

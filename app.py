@@ -35,7 +35,7 @@ async def voice_mode(
     await assistant.authorization()
 
     # Preprocess file
-    transcription = await asyncio.to_thread(preprocess_audio, str(dest))
+    transcription = await preprocess_audio(str(dest))
     state_data["message"] = HumanMessage(
         content=transcription
     )
