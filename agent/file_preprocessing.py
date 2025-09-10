@@ -1,19 +1,12 @@
-from speechbrain.inference.classifiers import EncoderClassifier
 from langchain_core.messages import HumanMessage
-import speech_recognition as sr
-from pydub import AudioSegment
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from docx import Document
-import torchaudio
 import mimetypes
 import asyncio
 import base64
-import os
 
 load_dotenv()
-language_id = EncoderClassifier.from_hparams(source="speechbrain/lang-id-voxlingua107-ecapa", savedir="tmp")
-
 
 async def preprocess_file(file_name: str):
     mime_type = mimetypes.guess_type(file_name)[0]
@@ -22,49 +15,18 @@ async def preprocess_file(file_name: str):
     elif "video" in mime_type:
         prompt = "Give a detailed description of the video."
     elif "audio" in mime_type:
-        return await asyncio.to_thread(preprocess_audio, file_name)
+        return await preprocess_audio(file_name)
     else:
         return await asyncio.to_thread(preprocess_text, file_name, mime_type)
 
 
-def preprocess_audio(file_name: str):
-    if not os.path.exists(file_name):
-        raise FileNotFoundError(f"File not found: {file_name}")
-
-    wav_file = os.path.splitext(file_name)[0] + ".wav"
-    audio = AudioSegment.from_file(file_name)
-    audio.export(wav_file, format="wav")
-    signal = language_id.load_audio(wav_file)
-    out = language_id.classify_batch(signal)[0].tolist()[0]
-    lang_mapping = {
-        20: "en",
-        106: "zh",
-        35: "hi",
-        22: "es",
-        3: "ar",
-        28: "fr",
-        77: "ru",
-        75: "pt",
-        9: "bn",
-        45: "ja",
-        18: "de",
-        51: "ko",
-        102: "vi",
-        99: "uk"
-    }
-    scores = [out[index] for index in lang_mapping.keys()]
-    language = list(lang_mapping.values())[scores.index(max(scores))]
-    recognizer = sr.Recognizer()
-    with sr.AudioFile(wav_file) as source:
-        audio_data = recognizer.record(source)
-        try:
-            text = recognizer.recognize_google(audio_data, language=language)
-        except sr.UnknownValueError:
-            text = "[Unintelligible audio]"
-        except sr.RequestError as e:
-            text = f"[API error: {e}]"
-    os.remove(wav_file)
-    return text
+async def preprocess_audio(file_name):
+    from agent.models import groq_client
+    transcription = await groq_client.audio.transcriptions.create(
+        model="whisper-large-v3-turbo",
+        file=open(file_name, "rb")
+    )
+    return transcription.text
 
 
 async def preprocess_image(file_name: str):
