@@ -30,6 +30,7 @@ This project is a **voice- and text-based AI assistant** powered by **FastAPI**,
   - Supervisor agent
   - Deep research agent
   - Coding agent
+  - Smart home agent
 - **Supervisor tools**:
   - Web search
   - Current time
@@ -42,6 +43,9 @@ This project is a **voice- and text-based AI assistant** powered by **FastAPI**,
 - **Coder tools**:
   - Github toolkit
   - Web search (For docs research)
+- **Smart home tools**:
+  - Get device list
+  - Change device states
 
 ---
 
@@ -118,7 +122,12 @@ It follows a `TypedDict` schema and may contain keys such as:
     openweathermap_api_key: str
     github_token: str
     tavily_api_key: str
-    groq_api_key: str
+    groq_api_key: str,
+    tuya_access_id: str
+    tuya_access_key: str
+    tuya_username: str
+    tuya_password: str
+    tuya_country: str
     clear_history: bool (True/False)
     messages: list (Filled automatically from the database) 
 
@@ -126,6 +135,13 @@ It follows a `TypedDict` schema and may contain keys such as:
 ```
 
 This dictionary acts as a single mutable state shared across all agent steps, allowing for data accumulation, tool responses, and message tracking.
+
+
+---
+
+## ⚙️ Tuya Setup
+
+Take a look at the [official instructions](https://developer.tuya.com/en/docs/iot/device-control-best-practice?id=Ka72202tz4m67)
 
 ---
 
@@ -137,6 +153,7 @@ This dictionary acts as a single mutable state shared across all agent steps, al
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [Whisper](https://github.com/openai/whisper)
 - [SQLAlchemy + Async](https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html)
+- [Tuya Smart Home](https://github.com/tuya/tuya-iot-python-sdk?tab=readme-ov-file)
 
 ---
 

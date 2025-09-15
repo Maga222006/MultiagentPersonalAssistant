@@ -54,6 +54,11 @@ async def load_config_to_env(user_id: str):
         'github_token': 'GITHUB_TOKEN',
         'tavily_api_key': 'TAVILY_API_KEY',
         'groq_api_key': 'GROQ_API_KEY',
+        'tuya_access_id': 'TUYA_ACCESS_ID',
+        'tuya_access_key': 'TUYA_ACCESS_KEY',
+        'tuya_username': 'TUYA_USERNAME',
+        'tuya_password': 'TUYA_PASSWORD',
+        'tuya_country': 'TUYA_COUNTRY',
     }
 
     for config_key, env_key in env_mapping.items():
@@ -65,9 +70,8 @@ async def load_config_to_env(user_id: str):
 async def save_env_to_file():
     """Save current environment variables to .env file"""
     env_vars = [
-        'DATABASE_URL', 'TOKEN', 'ASSISTANT_NAME', 'LOCATION', 'LATITUDE', 'LONGITUDE',
-        'OPENWEATHERMAP_API_KEY', 'GITHUB_TOKEN', 'TAVILY_API_KEY',
-        'GROQ_API_KEY'
+        'DATABASE_URL', 'TOKEN', 'ASSISTANT_NAME', 'LOCATION', 'LATITUDE', 'LONGITUDE','OPENWEATHERMAP_API_KEY', 'GITHUB_TOKEN',
+        'TAVILY_API_KEY', 'GROQ_API_KEY', 'TUYA_ACCESS_ID', 'TUYA_ACCESS_KEY', 'TUYA_USERNAME', 'TUYA_PASSWORD', 'TUYA_COUNTRY',
     ]
 
     # Set default values if not present

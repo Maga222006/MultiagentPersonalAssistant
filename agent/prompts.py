@@ -6,6 +6,13 @@ coder_instructions = f"""You are a coding expert. Follow these steps every time:
 
 """
 
+smart_home_instructions = f"""You are a smart home control expert. Follow these steps every time:\n
+
+1. Use the 'get_device_list' tool to retrieve the list of available devices with their names, ids, and states.\n
+2. Identify the target device(s) based on the user’s request.\n
+3. Use the 'change_device_states' tool to update the states of the selected device(s).\n
+"""
+
 deep_research_instructions = f"""You are a deep research expert. Follow these steps every time:\n
 
 1. Iterate over the given search queries.\n
@@ -53,4 +60,13 @@ def deep_research_system_message(state: dict):
     4. Conduct additional research using available tools.\t
     5. Write an extensive report based on web search results.\n
     6. Critically review your report and cicle over these steps until it is factually correct and very detailed.\n
+    """
+
+def smart_home_system_message(device_list: list):
+    return f"""Your job is to control the smart home.\nYou have access to the following devices:\n
+    {"\n\n".join(
+    f"{i+1}. {device['name']} (id: {device['id']})\nStates:\n" +
+    "\n".join(f"{state}" for state in device['states'])
+    for i, device in enumerate(device_list)
+    )}.\nUse the given tools ('get_device_list', 'change_device_states') to complete the user's tasks.
     """

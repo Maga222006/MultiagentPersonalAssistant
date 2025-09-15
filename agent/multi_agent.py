@@ -22,9 +22,13 @@ class State(TypedDict):
     github_token: str
     tavily_api_key: str
     groq_api_key: str
+    tuya_access_id: str
+    tuya_access_key: str
+    tuya_username: str
+    tuya_password: str
+    tuya_country: str
     clear_history: bool
     messages: list
-
 
 class Assistant:
     def __init__(self, state: State):
@@ -52,7 +56,8 @@ class Assistant:
             config_data = {}
             config_fields = [
                 'assistant_name', 'openweathermap_api_key', 'github_token',
-                'tavily_api_key', 'groq_api_key'
+                'tavily_api_key', 'groq_api_key', 'tuya_access_id', 'tuya_access_key',
+                'tuya_username', 'tuya_password', 'tuya_country'
             ]
 
             for field in config_fields:
@@ -72,6 +77,7 @@ class Assistant:
     def compile_multi_agent_system(self):
         """Create and return the multi-agent system"""
         try:
+            from agent.smart_home_agent import smart_home_agent
             from agent.deep_research_agent import deep_research_agent
             from agent.coder_agent import coder_agent
             from agent.prompts import supervisor_instructions
@@ -86,7 +92,7 @@ class Assistant:
                 output_messages_key="llm_input_messages",
             )
 
-            agents = [coder_agent, deep_research_agent]
+            agents = [coder_agent, deep_research_agent, smart_home_agent]
 
             supervisor = create_supervisor(
                 model=llm_supervisor,

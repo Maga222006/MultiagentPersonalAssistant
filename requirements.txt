@@ -4,6 +4,8 @@ python-dotenv>=1.1.1
 langchain>=0.3.27
 langgraph>=0.6.3
 openai>=1.99.1
+phonenumbers
+pycountry
 timm>=1.0.19
 langchain-groq>=0.3.7
 langgraph-supervisor>=0.0.29
