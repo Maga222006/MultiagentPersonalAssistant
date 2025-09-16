@@ -26,4 +26,3 @@ class UserConfig(Base):
     tuya_username = Column(String, nullable=True)
     tuya_password = Column(String, nullable=True)
     tuya_country = Column(String, nullable=True)
-    tuya_schema = Column(String, nullable=True)
