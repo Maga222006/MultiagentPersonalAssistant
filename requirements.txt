@@ -34,6 +34,7 @@ PyGithub>=2.7.0
 langchain-openai>=0.3.28
 langchain-google-genai
 gtts>=2.5.4
+jiter
 timezonefinder>=7.0.1
 geocoder>=1.38.1
 aiosqlite>=0.21.0

@@ -15,13 +15,16 @@ llm_supervisor = init_chat_model(
 )
 
 llm_peripheral = init_chat_model(
-   model="groq:gemma2-9b-it"
+    model="groq:gemma2-9b-it",
+    max_tokens=4000
 )
 
 llm_agents = init_chat_model(
-    model="groq:qwen/qwen3-32b"
+    model="groq:qwen/qwen3-32b",
+    max_tokens=4000
 )
 
 llm_image = init_chat_model(
-    model="groq:meta-llama/llama-4-scout-17b-16e-instruct"
+    model="groq:meta-llama/llama-4-scout-17b-16e-instruct",
+    max_tokens=3000
 )
