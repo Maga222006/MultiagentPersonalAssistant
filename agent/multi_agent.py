@@ -99,6 +99,7 @@ class Assistant:
                 tools=supervisor_tools,
                 agents=agents,
                 prompt=supervisor_instructions(supervisor_tools, agents),
+                parallel_tool_calls=True,
                 add_handoff_back_messages=False,
                 add_handoff_messages=False,
                 output_mode="full_history",
