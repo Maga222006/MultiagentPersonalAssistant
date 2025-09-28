@@ -1,7 +1,7 @@
-from agent.file_preprocessing import preprocess_file, preprocess_audio
+from agents.utils.file_preprocessing import preprocess_file, preprocess_audio
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from langchain_core.messages import HumanMessage
-from agent.multi_agent import Assistant
+from agents.multi_agent import Assistant
 from typing import Any, Dict
 from fastapi import Form
 from pathlib import Path

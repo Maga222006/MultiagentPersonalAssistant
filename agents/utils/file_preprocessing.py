@@ -13,7 +13,7 @@ async def preprocess_file(file_name: str):
     if "image" in mime_type:
         return await preprocess_image(file_name)
     elif "video" in mime_type:
-        prompt = "Give a detailed description of the video."
+        pass
     elif "audio" in mime_type:
         return await preprocess_audio(file_name)
     else:

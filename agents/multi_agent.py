@@ -1,34 +1,13 @@
 from database_interaction.config import create_or_update_config, load_config_to_env, init_config_db
 from database_interaction.user import get_user_by_id, create_or_update_user, init_user_db
 from langchain_community.chat_message_histories import SQLChatMessageHistory
-from langchain_core.messages import SystemMessage, AnyMessage, AIMessage
 from langchain_core.messages.utils import count_tokens_approximately
+from langchain_core.messages import SystemMessage, AIMessage
 from sqlalchemy.ext.asyncio import create_async_engine
-from langgraph_supervisor import create_supervisor
+from langgraph.prebuilt import create_react_agent
 from langmem.short_term import SummarizationNode
-from typing_extensions import TypedDict
+from agents.states import State
 import os
-
-class State(TypedDict):
-    message: AnyMessage
-    user_id: str
-    first_name: str
-    last_name: str
-    assistant_name: str
-    latitude: str
-    longitude: str
-    location: str
-    openweathermap_api_key: str
-    github_token: str
-    tavily_api_key: str
-    groq_api_key: str
-    tuya_access_id: str
-    tuya_access_key: str
-    tuya_username: str
-    tuya_password: str
-    tuya_country: str
-    clear_history: bool
-    messages: list
 
 class Assistant:
     def __init__(self, state: State):
@@ -77,12 +56,9 @@ class Assistant:
     def compile_multi_agent_system(self):
         """Create and return the multi-agent system"""
         try:
-            from agent.smart_home_agent import smart_home_agent
-            from agent.deep_research_agent import deep_research_agent
-            from agent.coder_agent import coder_agent
-            from agent.prompts import supervisor_instructions
-            from agent.models import llm_supervisor, llm_peripheral
-            from agent.tools import supervisor_tools
+            from agents.models import llm_supervisor, llm_peripheral
+            from agents.prompts import prompt
+            from agents.tools import tools
 
             summarization_node = SummarizationNode(
                 token_counter=count_tokens_approximately,
@@ -92,21 +68,15 @@ class Assistant:
                 output_messages_key="llm_input_messages",
             )
 
-            agents = [coder_agent, deep_research_agent, smart_home_agent]
-
-            supervisor = create_supervisor(
+            agent = create_react_agent(
                 model=llm_supervisor,
-                tools=supervisor_tools,
-                agents=agents,
-                prompt=supervisor_instructions(supervisor_tools, agents),
-                parallel_tool_calls=True,
-                add_handoff_back_messages=False,
-                add_handoff_messages=False,
-                output_mode="full_history",
-                pre_model_hook=summarization_node
+                tools=tools,
+                prompt=prompt(tools),
+                state_schema=State,
+                version='v1',
+                pre_model_hook=summarization_node,
             )
-
-            return supervisor.compile()
+            return agent
 
         except Exception as e:
             print(f"Error creating multi-agent system: {e}")
@@ -128,6 +98,7 @@ class Assistant:
 
     async def run(self):
         """Process messages through the multi-agent system"""
+        from agents.prompts import system_message
         try:
             user_info = await get_user_by_id(user_id=self.state['user_id'])
             if user_info.get('location'):
@@ -137,30 +108,17 @@ class Assistant:
             if user_info.get('longitude'):
                 os.environ['LONGITUDE'] = str(user_info['longitude'])
 
-            system_msg = SystemMessage(
-                content=f"""
-                            You are an intelligent assistant named {os.getenv('ASSISTANT_NAME', 'Assistant')}, helpful personal assistant built using a multi-agent system architecture. Your tools include web search, weather and time lookups, code execution, and GitHub integration. You work inside a Telegram interface and respond concisely, clearly, and informatively.
-
-                            The user you are assisting is:
-                            - **Name**: {user_info.get('first_name', 'Unknown') or 'Unknown'} {user_info.get('last_name', '') or ''}
-                            - **User ID**: {self.state['user_id']}
-                            - **Location**: {user_info.get('location', 'Unknown') or 'Unknown'}
-                            - **Coordinates**: ({user_info.get('latitude', 'N/A') or 'N/A'}, {user_info.get('longitude', 'N/A') or 'N/A'})
-
-                            You may use their location when answering weather or time-related queries. If the location is unknown, you may ask the user to share it.
-
-                            Stay helpful, respectful, and relevant to the user's query.
-                            """.strip()
-            )
 
             await self.message_history.aadd_message(self.state['message'])
             messages = await self.message_history.aget_messages()
 
-            self.state['messages'] = messages[-8:-1] + [system_msg, messages[-1]]
+            self.state['messages'] = messages[-8:-1] + [SystemMessage(system_message(user_info)), messages[-1]]
             multi_agent_system = self.compile_multi_agent_system()
 
-            result = await multi_agent_system.ainvoke({"messages": self.state["messages"]},
-                                                      generation_config=dict(response_modalities=["TEXT"]))
+            result = await multi_agent_system.ainvoke(
+                {"messages": self.state["messages"]},
+                generation_config=dict(response_modalities=["TEXT"])
+            )
             await self.message_history.aadd_message(result['messages'][-1])
             return {"messages": result.get("messages", [])}
 
