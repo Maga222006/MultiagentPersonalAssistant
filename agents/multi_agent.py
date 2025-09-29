@@ -31,7 +31,6 @@ class Assistant:
                 latitude=float(self.state['latitude']) if self.state.get('latitude') else None,
                 longitude=float(self.state['longitude']) if self.state.get('longitude') else None,
             )
-
             config_data = {}
             config_fields = [
                 'assistant_name', 'openweathermap_api_key', 'github_token',
