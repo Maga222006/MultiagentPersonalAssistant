@@ -38,17 +38,15 @@ if not connection['success']:
     connection = openapi.connect(os.getenv('TUYA_USERNAME'), os.getenv('TUYA_PASSWORD'), os.getenv('TUYA_COUNTRY_CODE'), 'SmartLife')
 
 def get_device_list():
-    """
-    Get the list of devices bound to the smart home.
-    Each device has id: str, name: str and states: List[dict].
-    States is a list of device states which can be changed.
-    State format: {'code': ..., 'value': ...}
-    """
-    response = openapi.get('/v1.0/users/{}/devices'.format(connection['result']['uid']))['result']
-    devices = []
-    for device in response:
-        devices.append({"id": device['id'], 'name': device['name'], 'states': device['status']})
-    return devices
+    """List all the smart home devices."""
+    try:
+        response = openapi.get('/v1.0/users/{}/devices'.format(connection['result']['uid']))['result']
+        devices = []
+        for device in response:
+            devices.append({"id": device['id'], 'name': device['name'], 'states': device['status']})
+        return "\n\n".join(f"{i + 1}. {device['name']} (id: {device['id']})\nStates:\n" + "\n".join(f"{state}" for state in device['states']) for i, device in enumerate(devices))
+    except Exception as e:
+        return None
 
 @tool
 def change_device_states(id:str, commands:list[dict]):

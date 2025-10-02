@@ -28,25 +28,17 @@ This project is a **voice- and text-based AI assistant** powered by **FastAPI**,
 - **User database** with persistent settings and config
 - **Agents**:
   - Supervisor agent
-  - Deep research agent
   - Coding agent
-  - Smart home agent
 - **Supervisor tools**:
   - Web search
   - Current time
   - Weather
   - Yahoo finance news
-- **Deep research tools**:
-  - Web search
-  - Wikipedia
-  - Yahoo finance news
+  - Change device states (Smart Home)
 - **Coder tools**:
   - Github toolkit
   - Web search (For docs research)
-- **Smart home tools**:
-  - Get device list
-  - Change device states
-
+  - Code Interpreter
 ---
 
 ## 🛠️ Setup Instructions

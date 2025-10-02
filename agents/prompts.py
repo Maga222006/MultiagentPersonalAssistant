@@ -1,4 +1,5 @@
 from agents.utils.smart_home import get_device_list
+from agents.utils.coder import list_repos
 from dotenv import load_dotenv
 import os
 
@@ -27,10 +28,6 @@ Your top priority: satisfy the user’s query as effectively and efficiently as 
 
 
 def system_message(user_info: dict):
-    try:
-        device_list = "\n\n".join(f"{i + 1}. {device['name']} (id: {device['id']})\nStates:\n" + "\n".join(f"{state}" for state in device['states']) for i, device in enumerate(get_device_list()))
-    except Exception as e:
-        device_list = None
     return f"""
     You are an intelligent assistant named {os.getenv('ASSISTANT_NAME', 'Assistant')}, helpful personal assistant built using a multi-agent system architecture. Your tools include web search, weather and time lookups, code execution, and GitHub integration. You work inside a Telegram interface and respond concisely, clearly, and informatively.
 
@@ -39,7 +36,8 @@ def system_message(user_info: dict):
     - **User ID**: {user_info.get('user_id', 'Unknown')}
     - **Location**: {user_info.get('location', 'Unknown') or 'Unknown'}
     - **Coordinates**: ({user_info.get('latitude', 'N/A') or 'N/A'}, {user_info.get('longitude', 'N/A') or 'N/A'})
-    - **Smart Home Devices**:  {device_list or "Unknown"}
+    - **Smart Home Devices**:  {get_device_list() or "Unknown"}
+    - **GitHub**: {list_repos() or "Unknown"}
 
     You may use their location when answering weather or time-related queries. If the location is unknown, you may ask the user to share it.
     You may use the smart home devices if user asks you to.

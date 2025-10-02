@@ -20,7 +20,8 @@ llm_peripheral = init_chat_model(
 )
 
 llm_sub_agents = init_chat_model(
-    model="groq:qwen/qwen3-32b"
+    model="groq:moonshotai/kimi-k2-instruct-0905",
+    max_tokens=4000
 )
 
 llm_image = init_chat_model(
