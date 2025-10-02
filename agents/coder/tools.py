@@ -81,10 +81,8 @@ def delete_file(project_name: str, file_path: str):
         file = repo.get_contents(file_path)
         sha = file.sha
         repo.delete_file(file_path, "Deleting file", sha)
-        print(f"File '{file_path}' deleted successfully in '{project_name}'.")
         return f"File '{file_path}' deleted successfully from '{project_name}'."
     except Exception as e:
-        print(f"Error deleting file: {str(e)}")
         return f"Error deleting file: {str(e)}"
 
 @tool
@@ -95,7 +93,6 @@ def read_file(project_name: str, file_path: str) -> str:
         with open(full_path, "r", encoding="utf-8") as f:
             return f.read()
     except Exception as e:
-        print(f"Error reading file: {str(e)}")
         return f"Error reading file '{full_path}': {str(e)}"
 
 @tool
