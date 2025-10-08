@@ -16,7 +16,7 @@ llm_supervisor = init_chat_model(
 )
 
 llm_peripheral = init_chat_model(
-   model="llama-3.1-8b-instant"
+   model="groq:llama-3.1-8b-instant"
 )
 
 llm_sub_agents = init_chat_model(
